@@ -34,14 +34,35 @@ export const GameStatus: React.FC = () => {
         toast.success('Result copied to clipboard!', {
           duration: 3000,
           position: 'bottom-center',
+          style: {
+            background: '#4ade80',
+            color: '#fff',
+            padding: '16px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: '500',
+            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          },
+          icon: '📋',
         });
       })
       .catch((error) => {
         console.error('Error copying text:', error);
-        toast.error('Could not copy the result');
+        toast.error('Could not copy the result', {
+          duration: 3000,
+          position: 'bottom-center',
+          style: {
+            background: '#f87171',
+            color: '#fff',
+            padding: '16px',
+            borderRadius: '10px',
+            fontSize: '14px',
+            fontWeight: '500',
+          },
+        });
       });
     
-    setShowShareOptions(false);
+    setShowShareOptions(true);
   };
 
   // Compartilhar no X (formerly Twitter)
@@ -53,15 +74,25 @@ export const GameStatus: React.FC = () => {
 
   // Compartilhar em dispositivos móveis usando a Web Share API
   const handleNativeShare = () => {
-    if (navigator.share) {
+    // Verificar se é realmente um dispositivo móvel
+    const isMobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobileByScreen = window.innerWidth <= 768;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    const isTrulyMobile = isMobileByUserAgent && (isMobileByScreen || isTouchDevice);
+    
+    if (navigator.share && isTrulyMobile) {
       navigator.share({
         title: 'My result in Landmark Guesser',
         text: generateShareText(),
-        url: 'https://landmarkguesser.com',
+        url: 'https://landmarklens.vercel.app',
       })
-      .catch((error) => console.error('Error sharing:', error));
+      .catch((error) => {
+        console.error('Error sharing:', error);
+        setShowShareOptions(true);
+      });
     } else {
-      setShowShareOptions(true);
+      setShowShareOptions(prev => !prev);
     }
   };
 
