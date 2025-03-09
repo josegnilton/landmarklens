@@ -26,12 +26,15 @@ export const useGameStore = create<GameState>((set) => ({
   blurLevel: 20,
   guesses: [],
   showHint: false,
-  addGuess: (guess: string) => set((state) => ({
-    attempts: state.attempts + 1,
-    blurLevel: Math.max(0, state.blurLevel - 4),
-    guesses: [...state.guesses, guess],
-    guessed: isCloseMatch(guess, state.currentLandmark.name)
-  })),
+  addGuess: (guess: string) => set((state) => {
+    const isCorrect = isCloseMatch(guess, state.currentLandmark.name);
+    return {
+      attempts: state.attempts + 1,
+      blurLevel: isCorrect ? 0 : Math.max(0, state.blurLevel - 4),
+      guesses: [...state.guesses, guess],
+      guessed: isCorrect
+    };
+  }),
   resetGame: () => set({
     currentLandmark: getRandomLandmark(),
     attempts: 0,

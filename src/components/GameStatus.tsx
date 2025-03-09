@@ -3,9 +3,10 @@ import { useGameStore } from '../store';
 import { HelpCircle } from 'lucide-react';
 
 export const GameStatus: React.FC = () => {
-  const { attempts, maxAttempts, guessed, currentLandmark, showHint, toggleHint } = useGameStore();
+  const { attempts, maxAttempts, guessed, currentLandmark, showHint , toggleHint } = useGameStore();
   
   if (guessed) {
+
     return (
       <div className="text-center p-6 bg-green-100 rounded-xl border border-green-200 shadow-inner animate-fade-in">
         <p className="text-2xl font-bold text-green-700 mb-2">🎉 Congratulations! 🎉</p>
