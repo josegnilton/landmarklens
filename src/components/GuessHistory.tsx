@@ -4,8 +4,12 @@ import { useGameStore } from '../store';
 export const GuessHistory: React.FC = () => {
   const { guesses } = useGameStore();
 
-  if (guesses.length === 0) {
-    return null;
+  if (!guesses || guesses.length === 0) {
+    return (
+      <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">
+        <p className="text-gray-500">No previous guesses. Try to guess the landmark!</p>
+      </div>
+    );
   }
 
   return (

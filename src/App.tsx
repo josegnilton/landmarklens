@@ -14,7 +14,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
       <Toaster />
       <header className="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-5xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Compass className="w-8 h-8 text-blue-600 animate-pulse" />
@@ -33,32 +33,40 @@ function App() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-        {/* Main content - now in the center */}
-        <main className="flex-1 order-1 md:order-1 max-w-2xl mx-auto">
-          <div className="space-y-8">
-            <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-2xl bg-white">
-              <div className="absolute inset-0 bg-black/10"></div>
-              <img
-                src={currentLandmark.image}
-                alt="Mystery landmark"
-                className="w-full h-full object-cover transition-all duration-700 ease-in-out transform hover:scale-105"
-                style={{ filter: `blur(${blurLevel}px)` }}
-              />
-            </div>
-
-            <div className="flex flex-col items-center space-y-6">
-              <GameStatus />
-              <GuessInput />
-              <GuessHistory />
-            </div>
+      <main className="max-w-5xl mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-2xl bg-white">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div
+              className="w-full h-full transition-all duration-700 ease-in-out transform hover:scale-105"
+              style={{ 
+                backgroundImage: `url(${currentLandmark.image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                filter: `blur(${blurLevel}px)`
+              }}
+              aria-label="Mystery landmark"
+            />
           </div>
-        </main>
 
-        <aside className="md:w-80 md:sticky md:top-24 md:self-start order-2 md:order-2">
-          <GameHistory />
-        </aside>
-      </div>
+          <div className="flex flex-col items-center space-y-6 mt-6">
+            <GameStatus />
+            <GuessInput />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Previous Guesses</h2>
+            <GuessHistory />
+          </div>
+    
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Game History</h2>
+            <GameHistory />
+          </div>
+        </div>
+      </main>
 
       <footer className="mt-auto py-4 text-center text-sm text-gray-600">
         <p>Try to guess the landmark in 6 attempts or less!</p>
