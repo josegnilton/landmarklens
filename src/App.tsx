@@ -57,12 +57,10 @@ function App() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
           <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Previous Guesses</h2>
             <GuessHistory />
           </div>
     
           <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Game History</h2>
             <GameHistory />
           </div>
         </div>
