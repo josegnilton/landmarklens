@@ -92,7 +92,7 @@ export const GameStatus: React.FC = () => {
 
   if (guessed) {
     return (
-      <div className="text-center p-6 bg-green-100 rounded-xl border border-green-200 shadow-sm animate-fade-in">
+      <div className="text-center p-6 bg-green-100  border border-green-200 shadow-sm animate-fade-in">
         <p className="text-2xl font-bold text-green-700 mb-2">🎉 Parabéns! 🎉</p>
         <p className="text-green-600 mb-4">
           You discovered {currentLandmark.name} in {currentLandmark.location}!
@@ -101,24 +101,24 @@ export const GameStatus: React.FC = () => {
         <div className="flex flex-col items-center gap-3">
           <button
             onClick={handleNativeShare}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-500 transition-colors w-full max-w-xs"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white  shadow hover:bg-blue-500 transition-colors w-full max-w-xs"
           >
             <Share size={18} />
             Share Result
           </button>
 
           {showShareOptions && (
-            <div className="flex flex-wrap justify-center gap-2 mt-2 p-2 bg-white rounded-lg shadow animate-fade-in w-full max-w-xs">
+            <div className="flex flex-wrap justify-center gap-2 mt-2 p-2 bg-white  shadow animate-fade-in w-full max-w-xs">
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-md transition"
+                className="flex items-center gap-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
               >
                 <Copy size={16} />
                 <span>Copy</span>
               </button>
               <button
                 onClick={handleXShare}
-                className="flex items-center gap-1 px-3 py-2 bg-black text-white hover:bg-gray-800 rounded-md transition"
+                className="flex items-center gap-1 px-3 py-2 bg-black text-white hover:bg-gray-800 transition"
               >
                 <Twitter size={16} />
                 <span>X</span>
@@ -126,7 +126,7 @@ export const GameStatus: React.FC = () => {
             </div>
           )}
 
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 text-left w-full max-w-xs">
+          <div className="mt-4 p-3 bg-gray-50  border border-gray-200 text-left w-full max-w-xs">
             <p className="text-sm text-gray-500 font-medium mb-1">Preview:</p>
             <p className="text-sm text-gray-700 whitespace-pre-line">{generateShareText()}</p>
           </div>
@@ -137,14 +137,14 @@ export const GameStatus: React.FC = () => {
 
   if (attempts >= maxAttempts) {
     return (
-      <div className="text-center p-6 bg-red-100 rounded-xl border border-red-200 shadow-sm animate-fade-in">
+      <div className="text-center p-6 bg-red-100  border border-red-200 shadow-sm animate-fade-in">
         <p className="text-2xl font-bold text-red-700 mb-2">Game Over</p>
         <p className="text-red-600 mb-4">
           The tourist attraction was {currentLandmark.name} in {currentLandmark.location}
         </p>
         <button
           onClick={handleNativeShare}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-500 transition-colors mx-auto"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white  shadow hover:bg-blue-500 transition-colors mx-auto"
         >
           <Share size={16} />
           Share Result
@@ -154,7 +154,7 @@ export const GameStatus: React.FC = () => {
   }
 
   return (
-    <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 w-full max-w-md mx-auto">
+    <div className="text-center p-4 bg-white  shadow-sm border border-gray-100 w-full max-w-md mx-auto">
       <p className="text-lg font-semibold text-gray-700 mb-2">
         {maxAttempts - attempts} Attempts Remaining
       </p>

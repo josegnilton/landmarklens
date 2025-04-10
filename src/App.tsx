@@ -1,44 +1,67 @@
-
 import { useEffect } from 'react';
 import { Compass, RefreshCw } from 'lucide-react';
 import { useGameStore } from './store';
 import { GuessInput } from './components/GuessInput';
-import { GameStatus } from './components/GameStatus';
 import { GuessHistory } from './components/GuessHistory';
-import { GameHistory } from './components/GameHistory'
+import { GameHistory } from './components/GameHistory';
 import { Toaster } from 'react-hot-toast';
+import mountain from './assets/Mountain.png';
 
 function App() {
-  const { currentLandmark, blurLevel, resetGame } = useGameStore();
+  const { currentLandmark, blurLevel } = useGameStore();
   const isDailyMode = useGameStore((s) => s.isDailyMode);
   const guessed = useGameStore((state) => state.guessed);
   const attempts = useGameStore((state) => state.attempts);
   const maxAttempts = useGameStore((state) => state.maxAttempts);
-  const gameOver = guessed || attempts >= maxAttempts;
-
   const dailyCompleted = useGameStore((s) => s.dailyCompleted);
-
 
   useEffect(() => {
     useGameStore.getState().resetGame(true);
   }, []);
 
+  const renderMountains = () => {
+    const remaining = maxAttempts - attempts;
+    return (
+      <div className="flex space-x-2">
+        {Array.from({ length: maxAttempts }).map((_, idx) => (
+          <img
+            key={idx}
+            src={mountain}
+            alt="Mountain life"
+            className={`w-6 h-6 transition-opacity duration-300 ${idx < remaining ? 'opacity-100' : 'opacity-30'
+              }`}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-r from-[#F0F9FF] via-white to-[#FFEDD4]">
       <Toaster />
       <header className="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="w-8 h-8 text-blue-600 animate-pulse" />
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 text-transparent bg-clip-text">
-                LandmarkLens
-              </h1>
-            </div>
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Compass className="w-8 h-8 text-blue-600 animate-pulse" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 text-transparent bg-clip-text">
+              LandmarkLens
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button disabled className="text-gray-400 cursor-not-allowed hover:text-gray-400 transition">
+              FAQ
+            </button>
+            <button disabled className="text-gray-400 cursor-not-allowed hover:text-gray-400 transition">
+              Settings
+            </button>
+            <button disabled className="text-gray-400 cursor-not-allowed hover:text-gray-400 transition">
+              Statistics
+            </button>
+
             {dailyCompleted && (
               <button
                 onClick={() => useGameStore.getState().resetGame(false)}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
               >
                 <RefreshCw size={16} />
                 New Game
@@ -48,16 +71,23 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl font-bold text-center mt-4 pb-2 text-blue-500 animate-pulse">
-            {isDailyMode ? "🌐 Daily Challenge!" : "🎯 Explore in Free Mode!"}
-          </h2>
+      <main className="max-w-5xl mx-auto px-4 py-8 space-y-10 rounded">
+        <div className="bg-[#F8FAFC] shadow-xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold" style={{ color: '#314158' }}>
+              Can you recognise this place?
+            </h2>
+            {renderMountains()}
+          </div>
 
-          <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-2xl bg-white">
+          <p className="text-sm font-medium mb-2" style={{ color: '#314158' }}>
+            {isDailyMode ? '🌐 Daily Challenge!' : '🎯 Explore in Free Mode!'}
+          </p>
+
+          <div className="relative aspect-video w-full overflow-hidden shadow-md bg-white mb-6">
             <div className="absolute inset-0 bg-black/10"></div>
             <div
-              className="w-full h-full transition-all duration-700 ease-in-out transform hover:scale-105"
+              className="w-full h-full transition-all duration-700 ease-in-out"
               style={{
                 backgroundImage: `url(${currentLandmark.image})`,
                 backgroundSize: 'cover',
@@ -68,25 +98,20 @@ function App() {
             />
           </div>
 
-          <div className="flex flex-col items-center space-y-6 mt-6">
-            <GameStatus />
+          <div className="flex flex-col items-center space-y-6">
             <GuessInput />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-          <div>
             <GuessHistory />
           </div>
-
-          <div>
-            <GameHistory />
-          </div>
+        </div>
+        <div className="w-full flex flex-col space-y-6 mt-8">
+          <GameHistory />
         </div>
       </main>
 
-      <footer className="mt-auto py-4 text-center text-sm text-gray-600">
-        <p>Try to guess the landmark in 6 attempts or less!</p>
+      <footer className="w-full py-4 bg-gradient-to-r from-[#F0F9FF] via-white to-[#FFEDD4] mt-10">
+        <div className="max-w-5xl mx-auto px-4 text-center text-sm text-[#314158]">
+          Made with ❤️ by the Landmark Team · © {new Date().getFullYear()}
+        </div>
       </footer>
     </div>
   );

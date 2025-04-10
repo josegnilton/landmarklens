@@ -34,7 +34,7 @@ export const GameHistory: React.FC = () => {
     if (streak <= 0) return null;
 
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-orange-100 rounded-lg text-orange-700 animate-pulse">
+      <div className="flex items-center gap-2 px-3 py-2 bg-orange-100 text-orange-700 animate-pulse">
         <Flame className="text-orange-600" size={18} />
         <span className="font-bold">{streak} day streak!</span>
       </div>
@@ -56,24 +56,24 @@ export const GameHistory: React.FC = () => {
 
   if (!gameHistory || gameHistory.length === 0) {
     return (
-      <div className="p-6 bg-gray-50 rounded-xl border border-gray-200 text-center">
+      <div className="p-6 bg-gray-50  border border-gray-200 text-center">
         <p className="text-gray-500">No game history yet. Play your first game!</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="p-4 bg-white  border border-gray-200 shadow-sm rounded">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-800">Game History</h2>
         {renderStreakIndicator()}
       </div>
 
-      <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+      <div className="space-y-3 max-h-80 overflow-y-auto pr-2 rounded">
         {gameHistory.map((game, index) => (
           <div
             key={game.id || `game-${index}-${game.timestamp}`}
-            className={`p-3 rounded-lg border ${isToday(game.date) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+            className={`p-3  border ${isToday(game.date) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
               } ${game.guessed ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}
           >
             <div className="flex justify-between items-center mb-1">
@@ -96,7 +96,7 @@ export const GameHistory: React.FC = () => {
       </div>
 
       {streak >= 3 && (
-        <div className="mt-4 p-3 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-lg border border-orange-200">
+        <div className="mt-4 p-3 bg-gradient-to-r from-orange-100 to-yellow-100 border border-orange-200 rounded">
           <div className="flex items-center gap-2">
             <Flame className="text-orange-500" size={20} />
             <div>
@@ -107,7 +107,7 @@ export const GameHistory: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-4 flex justify-between text-sm text-gray-500">
+      <div className="mt-4 flex justify-between text-sm text-gray-500 rounded">
         <div className="flex items-center gap-1">
           <Trophy size={14} />
           <span>Total games: {gameHistory.length}</span>
