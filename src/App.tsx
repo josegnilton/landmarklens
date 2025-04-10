@@ -5,6 +5,7 @@ import { GuessInput } from './components/GuessInput';
 import { GuessHistory } from './components/GuessHistory';
 import { GameHistory } from './components/GameHistory';
 import { Toaster } from 'react-hot-toast';
+import EndGameModal from './components/EndGameModal';
 import mountain from './assets/Mountain.png';
 
 function App() {
@@ -14,6 +15,11 @@ function App() {
   const attempts = useGameStore((state) => state.attempts);
   const maxAttempts = useGameStore((state) => state.maxAttempts);
   const dailyCompleted = useGameStore((s) => s.dailyCompleted);
+  const streak = useGameStore((s) => s.streak);
+  const gameHistory = useGameStore.getState().gameHistory;
+  const total = gameHistory.length;
+  const wins = gameHistory.filter((g) => g.guessed).length;
+  const winRate = total ? Math.round((wins / total) * 100) : 0;
 
   useEffect(() => {
     useGameStore.getState().resetGame(true);
@@ -92,7 +98,7 @@ function App() {
                 backgroundImage: `url(${currentLandmark.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                filter: `blur(${blurLevel}px)`
+                filter: `blur(${blurLevel}px)`,
               }}
               aria-label="Mystery landmark"
             />
@@ -113,6 +119,20 @@ function App() {
           Made with ❤️ by the Landmark Team · © {new Date().getFullYear()}
         </div>
       </footer>
+
+      {isDailyMode && dailyCompleted && (
+        <EndGameModal
+          isOpen={true}
+          onClose={() => useGameStore.setState({ dailyCompleted: false })}
+          streak={streak}
+          winRate={winRate}
+          onShare={() => {
+            const shareText = `🔥 I nailed today's LandmarkLens challenge! I'm on a ${streak}-day streak with a ${winRate}% win rate!\nPlay at https://landmarklens.vercel.app`;
+            navigator.clipboard.writeText(shareText);
+            alert('Now you are ready to paste your result!');
+          }}
+        />
+      )}
     </div>
   );
 }

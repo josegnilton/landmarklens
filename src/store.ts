@@ -58,19 +58,18 @@ export const useGameStore = create<GameState>()(
           guessed: isCorrect
         });
 
-        if (get().isDailyMode) {
-          get().endDailyGame();
-        }
-
         if (gameOver) {
+          if (state.isDailyMode) {
+            get().endDailyGame();
+          }
+
           get().saveGameToHistory();
         }
-
       },
       resetGame: (isDailyMode = false) => {
         const dailyLandmark = get().getDailyLandmark?.();
         const landmark = isDailyMode && dailyLandmark ? dailyLandmark : getRandomLandmark();
-      
+
         set({
           currentLandmark: landmark,
           attempts: 0,
@@ -79,7 +78,7 @@ export const useGameStore = create<GameState>()(
           guesses: [],
           showHint: false,
           isDailyMode,
-          dailyCompleted: false 
+          dailyCompleted: false
         });
       },
 

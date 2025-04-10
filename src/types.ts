@@ -30,6 +30,7 @@ export interface GameState {
   clearHistory: () => void;
 }
 
+
 export interface GameRecord {
   id: string;
   date: string;
