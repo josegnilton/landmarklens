@@ -62,16 +62,13 @@ export const GameStatus: React.FC = () => {
     setShowShareOptions(true);
   };
 
-  // Compartilhar no X (formerly Twitter)
   const handleXShare = () => {
     const shareText = encodeURIComponent(generateShareText());
     window.open(`https://x.com/intent/tweet?text=${shareText}`, '_blank', 'noopener,noreferrer');
     setShowShareOptions(false);
   };
 
-  // Compartilhar em dispositivos móveis usando a Web Share API
   const handleNativeShare = () => {
-    // Verificar se é realmente um dispositivo móvel
     const isMobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isMobileByScreen = window.innerWidth <= 768;
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;

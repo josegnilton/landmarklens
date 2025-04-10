@@ -121,7 +121,6 @@ export const useGameStore = create<GameState>()(
         set((state) => {
           const updatedHistory = [newGameRecord, ...state.gameHistory].slice(0, MAX_HISTORY_ITEMS);
 
-          // atualiza streak só se for daily e acertou
           let newStreak = state.streak;
           let newLastDate = state.lastStreakDate;
 

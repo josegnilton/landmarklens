@@ -37,7 +37,7 @@ function App() {
             </div>
             {dailyCompleted && (
               <button
-                onClick={() => useGameStore.getState().resetGame(false)} // modo livre
+                onClick={() => useGameStore.getState().resetGame(false)}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
               >
                 <RefreshCw size={16} />
@@ -50,9 +50,10 @@ function App() {
 
       <main className="max-w-5xl mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-lg font-semibold text-center mt-4">
-            {isDailyMode ? "Desafio Diário 🗓️" : "Jogo Livre 🎮"}
+          <h2 className="text-xl font-bold text-center mt-4 pb-2 text-blue-500 animate-pulse">
+            {isDailyMode ? "🌐 Daily Challenge!" : "🎯 Explore in Free Mode!"}
           </h2>
+
           <div className="relative aspect-video w-full overflow-hidden rounded-xl shadow-2xl bg-white">
             <div className="absolute inset-0 bg-black/10"></div>
             <div
