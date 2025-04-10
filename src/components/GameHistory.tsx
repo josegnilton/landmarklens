@@ -1,4 +1,3 @@
-// GameHistory.tsx
 import React from 'react';
 import { useGameStore } from '../store';
 import { Calendar, Clock, Flame, Trophy } from 'lucide-react';
@@ -6,7 +5,6 @@ import { Calendar, Clock, Flame, Trophy } from 'lucide-react';
 export const GameHistory: React.FC = () => {
   const { gameHistory, streak } = useGameStore();
 
-  // Formatar data para exibição
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -22,7 +20,6 @@ export const GameHistory: React.FC = () => {
     }
   };
 
-  // Verificar se o jogo foi jogado hoje
   const isToday = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -33,7 +30,6 @@ export const GameHistory: React.FC = () => {
     }
   };
 
-  // Renderizar indicador de streak
   const renderStreakIndicator = () => {
     if (streak <= 0) return null;
     
@@ -45,13 +41,11 @@ export const GameHistory: React.FC = () => {
     );
   };
 
-  // Renderizar emoji baseado no desempenho
   const renderPerformanceEmoji = (game: any) => {
     if (!game.guessed) {
       return <span className="text-red-500">❌</span>;
     }
     
-    // Quanto menor o número de tentativas, melhor o desempenho
     const ratio = game.attempts / game.maxAttempts;
     
     if (ratio <= 0.3) return <span title="Perfect!">🏆</span>;

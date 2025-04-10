@@ -20,22 +20,6 @@ const isCloseMatch = (guess: string, actual: string): boolean => {
   return similarity >= SIMILARITY_THRESHOLD;
 };
 
-const calculateStreak = (history: GameRecord[]): number => {
-  if (!history || history.length === 0) return 0;
-  
-  let currentStreak = 0;
-  const sortedHistory = [...history].sort((a, b) => b.timestamp - a.timestamp);
-  
-  for (const game of sortedHistory) {
-    if (game.guessed) {
-      currentStreak++;
-    } else {
-      break;
-    }
-  }
-  
-  return currentStreak;
-};
 
 export const useGameStore = create<GameState>()(
   persist(
@@ -49,6 +33,7 @@ export const useGameStore = create<GameState>()(
       showHint: false,
       gameHistory: [],
       streak: 0,
+      lastStreakDate: null,
       
       addGuess: (guess: string) => {
         const state = get();
@@ -71,6 +56,8 @@ export const useGameStore = create<GameState>()(
       saveGameToHistory: () => {
         const state = get();
         const currentDate = new Date();
+        const todayStr = currentDate.toDateString();
+      
         const gameId = `${state.currentLandmark.id}_${currentDate.getTime()}`;
         
         const gameExists = state.gameHistory.some(game => 
@@ -78,10 +65,8 @@ export const useGameStore = create<GameState>()(
           Math.abs(game.timestamp - currentDate.getTime()) < 5000
         );
         
-        if (gameExists) {
-          return;
-        }
-        
+        if (gameExists) return;
+      
         const newGameRecord: GameRecord = {
           id: gameId,
           date: currentDate.toISOString(),
@@ -92,12 +77,23 @@ export const useGameStore = create<GameState>()(
           guessed: state.guessed,
           timestamp: currentDate.getTime()
         };
-        
-        set(state => {
-          const updatedHistory = [newGameRecord, ...state.gameHistory].slice(0, MAX_HISTORY_ITEMS);
+      
+        set(prevState => {
+          const updatedHistory = [newGameRecord, ...prevState.gameHistory].slice(0, MAX_HISTORY_ITEMS);
+      
+          // lógica do streak baseado em data
+          let updatedStreak = prevState.streak;
+          let updatedLastDate = prevState.lastStreakDate;
+      
+          if (newGameRecord.guessed && todayStr !== prevState.lastStreakDate) {
+            updatedStreak += 1;
+            updatedLastDate = todayStr;
+          }
+      
           return {
             gameHistory: updatedHistory,
-            streak: calculateStreak(updatedHistory)
+            streak: updatedStreak,
+            lastStreakDate: updatedLastDate
           };
         });
       },
@@ -126,7 +122,8 @@ export const useGameStore = create<GameState>()(
       name: 'landmark-guesser-storage',
       partialize: (state) => ({
         gameHistory: state.gameHistory,
-        streak: state.streak
+        streak: state.streak,
+        lastStreakDate: state.lastStreakDate
       }),
     }
   )

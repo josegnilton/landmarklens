@@ -7,6 +7,7 @@ export interface Landmark {
 }
 
 export interface GameState {
+  lastStreakDate: any;
   currentLandmark: Landmark;
   attempts: number;
   maxAttempts: number;
