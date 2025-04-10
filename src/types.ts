@@ -1,3 +1,5 @@
+import { landmarks } from "./data/landmarks";
+
 export interface Landmark {
   id: number;
   name: string;
@@ -7,6 +9,7 @@ export interface Landmark {
 }
 
 export interface GameState {
+  endDailyGame(): unknown;
   lastStreakDate: any;
   currentLandmark: Landmark;
   attempts: number;
@@ -17,8 +20,11 @@ export interface GameState {
   showHint: boolean;
   gameHistory: GameRecord[];
   streak: number;
+  isDailyMode: any;
+  dailyCompleted:any;
+  getDailyLandmark: () => typeof landmarks[number];
+  resetGame: (isDailyMode?: boolean) => void;
   addGuess: (guess: string) => void;
-  resetGame: () => void;
   toggleHint: () => void;
   saveGameToHistory: () => void;
   clearHistory: () => void;

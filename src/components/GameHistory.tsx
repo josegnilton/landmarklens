@@ -32,7 +32,7 @@ export const GameHistory: React.FC = () => {
 
   const renderStreakIndicator = () => {
     if (streak <= 0) return null;
-    
+
     return (
       <div className="flex items-center gap-2 px-3 py-2 bg-orange-100 rounded-lg text-orange-700 animate-pulse">
         <Flame className="text-orange-600" size={18} />
@@ -45,9 +45,9 @@ export const GameHistory: React.FC = () => {
     if (!game.guessed) {
       return <span className="text-red-500">❌</span>;
     }
-    
+
     const ratio = game.attempts / game.maxAttempts;
-    
+
     if (ratio <= 0.3) return <span title="Perfect!">🏆</span>;
     if (ratio <= 0.5) return <span title="Great!">🌟</span>;
     if (ratio <= 0.7) return <span title="Good">👍</span>;
@@ -68,14 +68,13 @@ export const GameHistory: React.FC = () => {
         <h2 className="text-xl font-bold text-gray-800">Game History</h2>
         {renderStreakIndicator()}
       </div>
-      
+
       <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
         {gameHistory.map((game, index) => (
-          <div 
-            key={game.id || `game-${index}-${game.timestamp}`} 
-            className={`p-3 rounded-lg border ${
-              isToday(game.date) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
-            } ${game.guessed ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}
+          <div
+            key={game.id || `game-${index}-${game.timestamp}`}
+            className={`p-3 rounded-lg border ${isToday(game.date) ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+              } ${game.guessed ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'}`}
           >
             <div className="flex justify-between items-center mb-1">
               <div className="flex items-center gap-2">
@@ -89,13 +88,13 @@ export const GameHistory: React.FC = () => {
                 {renderPerformanceEmoji(game)}
               </div>
             </div>
-            
+
             <p className="font-medium text-gray-800">{game.landmark}</p>
             <p className="text-sm text-gray-600">{game.location}</p>
           </div>
         ))}
       </div>
-      
+
       {streak >= 3 && (
         <div className="mt-4 p-3 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-lg border border-orange-200">
           <div className="flex items-center gap-2">
@@ -107,7 +106,7 @@ export const GameHistory: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <div className="mt-4 flex justify-between text-sm text-gray-500">
         <div className="flex items-center gap-1">
           <Trophy size={14} />

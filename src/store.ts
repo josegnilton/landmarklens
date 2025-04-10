@@ -20,6 +20,13 @@ const isCloseMatch = (guess: string, actual: string): boolean => {
   return similarity >= SIMILARITY_THRESHOLD;
 };
 
+const getDailyLandmark = (): typeof landmarks[number] => {
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const index = seed % landmarks.length;
+  return landmarks[index];
+};
+
 
 export const useGameStore = create<GameState>()(
   persist(
@@ -34,7 +41,10 @@ export const useGameStore = create<GameState>()(
       gameHistory: [],
       streak: 0,
       lastStreakDate: null,
-      
+      isDailyMode: true,
+      dailyCompleted: false,
+
+
       addGuess: (guess: string) => {
         const state = get();
         const isCorrect = isCloseMatch(guess, state.currentLandmark.name);
@@ -48,25 +58,55 @@ export const useGameStore = create<GameState>()(
           guessed: isCorrect
         });
 
+        if (get().isDailyMode) {
+          get().endDailyGame();
+        }
+
         if (gameOver) {
           get().saveGameToHistory();
         }
+
       },
+      resetGame: (isDailyMode = false) => {
+        const dailyLandmark = get().getDailyLandmark?.();
+        const landmark = isDailyMode && dailyLandmark ? dailyLandmark : getRandomLandmark();
       
+        set({
+          currentLandmark: landmark,
+          attempts: 0,
+          blurLevel: 20,
+          guessed: false,
+          guesses: [],
+          showHint: false,
+          isDailyMode,
+          dailyCompleted: false 
+        });
+      },
+
+      endDailyGame: () => {
+        set({ dailyCompleted: true });
+      },
+
+      getDailyLandmark: () => {
+        const today = new Date();
+        const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+        const index = seed % landmarks.length;
+        return landmarks[index];
+      },
+
+
       saveGameToHistory: () => {
         const state = get();
         const currentDate = new Date();
-        const todayStr = currentDate.toDateString();
-      
         const gameId = `${state.currentLandmark.id}_${currentDate.getTime()}`;
-        
-        const gameExists = state.gameHistory.some(game => 
-          game.landmark === state.currentLandmark.name && 
+
+        const gameExists = state.gameHistory.some(game =>
+          game.landmark === state.currentLandmark.name &&
           Math.abs(game.timestamp - currentDate.getTime()) < 5000
         );
-        
+
         if (gameExists) return;
-      
+
         const newGameRecord: GameRecord = {
           id: gameId,
           date: currentDate.toISOString(),
@@ -77,42 +117,37 @@ export const useGameStore = create<GameState>()(
           guessed: state.guessed,
           timestamp: currentDate.getTime()
         };
-      
-        set(prevState => {
-          const updatedHistory = [newGameRecord, ...prevState.gameHistory].slice(0, MAX_HISTORY_ITEMS);
-      
-          // lógica do streak baseado em data
-          let updatedStreak = prevState.streak;
-          let updatedLastDate = prevState.lastStreakDate;
-      
-          if (newGameRecord.guessed && todayStr !== prevState.lastStreakDate) {
-            updatedStreak += 1;
-            updatedLastDate = todayStr;
+
+        set((state) => {
+          const updatedHistory = [newGameRecord, ...state.gameHistory].slice(0, MAX_HISTORY_ITEMS);
+
+          // atualiza streak só se for daily e acertou
+          let newStreak = state.streak;
+          let newLastDate = state.lastStreakDate;
+
+          if (state.isDailyMode && state.guessed) {
+            const todayStr = new Date().toDateString();
+            const lastStr = new Date(state.lastStreakDate || 0).toDateString();
+
+            if (todayStr !== lastStr) {
+              newStreak += 1;
+              newLastDate = Date.now();
+            }
           }
-      
+
           return {
             gameHistory: updatedHistory,
-            streak: updatedStreak,
-            lastStreakDate: updatedLastDate
+            streak: newStreak,
+            lastStreakDate: newLastDate
           };
         });
       },
-      
-      resetGame: () => {
-        set({
-          currentLandmark: getRandomLandmark(),
-          attempts: 0,
-          blurLevel: 20,
-          guessed: false,
-          guesses: [],
-          showHint: false
-        });
-      },
-      
+
+
       toggleHint: () => set((state) => ({
         showHint: !state.showHint
       })),
-      
+
       clearHistory: () => set({
         gameHistory: [],
         streak: 0

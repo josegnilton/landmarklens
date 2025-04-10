@@ -7,28 +7,25 @@ export const GameStatus: React.FC = () => {
   const { attempts, maxAttempts, guessed, currentLandmark, showHint, toggleHint, guesses } = useGameStore();
   const [showShareOptions, setShowShareOptions] = useState(false);
 
-  // Função para verificar proximidade da resposta
   const isCloseMatch = (guess: string, actual: string) => {
     return guess.toLowerCase().trim() === actual.toLowerCase().trim();
   };
 
-  // Gera o texto de compartilhamento com formatação aprimorada
   const generateShareText = () => {
     const emojis = guesses.map(guess => isCloseMatch(guess, currentLandmark.name) ? '✅' : '❌');
-    
+
     let shareText = `🌍 LandmarkLens 🌍\n`;
     shareText += `I guessed: ${currentLandmark.name} in ${currentLandmark.location}!\n`;
     shareText += `Attempts: ${attempts}/${maxAttempts}\n`;
     shareText += `${emojis.join('')}\n`;
     shareText += `Play it yourself at: landmarklens.vercel.app`;
-    
+
     return shareText;
   };
 
-  // Copia resultado para a área de transferência
   const handleCopy = () => {
     const shareText = generateShareText();
-    
+
     navigator.clipboard.writeText(shareText)
       .then(() => {
         toast.success('Result copied to clipboard!', {
@@ -61,7 +58,7 @@ export const GameStatus: React.FC = () => {
           },
         });
       });
-    
+
     setShowShareOptions(true);
   };
 
@@ -78,19 +75,19 @@ export const GameStatus: React.FC = () => {
     const isMobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isMobileByScreen = window.innerWidth <= 768;
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    
+
     const isTrulyMobile = isMobileByUserAgent && (isMobileByScreen || isTouchDevice);
-    
+
     if (navigator.share && isTrulyMobile) {
       navigator.share({
         title: 'My result in LandmarkLens',
         text: generateShareText(),
         url: 'https://landmarklens.vercel.app',
       })
-      .catch((error) => {
-        console.error('Error sharing:', error);
-        setShowShareOptions(true);
-      });
+        .catch((error) => {
+          console.error('Error sharing:', error);
+          setShowShareOptions(true);
+        });
     } else {
       setShowShareOptions(prev => !prev);
     }
@@ -103,7 +100,7 @@ export const GameStatus: React.FC = () => {
         <p className="text-green-600 mb-4">
           You discovered {currentLandmark.name} in {currentLandmark.location}!
         </p>
-        
+
         <div className="flex flex-col items-center gap-3">
           <button
             onClick={handleNativeShare}
@@ -112,7 +109,7 @@ export const GameStatus: React.FC = () => {
             <Share size={18} />
             Share Result
           </button>
-          
+
           {showShareOptions && (
             <div className="flex flex-wrap justify-center gap-2 mt-2 p-2 bg-white rounded-lg shadow animate-fade-in w-full max-w-xs">
               <button
@@ -131,7 +128,7 @@ export const GameStatus: React.FC = () => {
               </button>
             </div>
           )}
-          
+
           <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 text-left w-full max-w-xs">
             <p className="text-sm text-gray-500 font-medium mb-1">Preview:</p>
             <p className="text-sm text-gray-700 whitespace-pre-line">{generateShareText()}</p>
