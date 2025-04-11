@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Compass, RefreshCw } from 'lucide-react';
 import { useGameStore } from './store';
 import { GuessInput } from './components/GuessInput';
@@ -16,10 +16,21 @@ function App() {
   const maxAttempts = useGameStore((state) => state.maxAttempts);
   const dailyCompleted = useGameStore((s) => s.dailyCompleted);
   const streak = useGameStore((s) => s.streak);
-  const gameHistory = useGameStore.getState().gameHistory;
+  const gameHistory = useGameStore((s) => s.gameHistory);
+  const gameOver = guessed || attempts >= maxAttempts;
+
   const total = gameHistory.length;
   const wins = gameHistory.filter((g) => g.guessed).length;
   const winRate = total ? Math.round((wins / total) * 100) : 0;
+  const userWon = guessed;
+
+  const [showEndGameModal, setShowEndGameModal] = useState(false);
+
+  useEffect(() => {
+    if (gameOver) {
+      setShowEndGameModal(true);
+    }
+  }, [gameOver]);
 
   useEffect(() => {
     useGameStore.getState().resetGame(true);
@@ -64,9 +75,12 @@ function App() {
               Statistics
             </button>
 
-            {dailyCompleted && (
+            {gameOver && (
               <button
-                onClick={() => useGameStore.getState().resetGame(false)}
+                onClick={() => {
+                  useGameStore.getState().resetGame(false);
+                  setShowEndGameModal(false);
+                }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
               >
                 <RefreshCw size={16} />
@@ -120,14 +134,18 @@ function App() {
         </div>
       </footer>
 
-      {isDailyMode && dailyCompleted && (
+      {gameOver && showEndGameModal && (
         <EndGameModal
           isOpen={true}
-          onClose={() => useGameStore.setState({ dailyCompleted: false })}
+          onClose={() => setShowEndGameModal(false)}
           streak={streak}
           winRate={winRate}
+          guessed={userWon}
+          attempts={attempts}
           onShare={() => {
-            const shareText = `🔥 I nailed today's LandmarkLens challenge! I'm on a ${streak}-day streak with a ${winRate}% win rate!\nPlay at https://landmarklens.vercel.app`;
+            const shareText = userWon
+              ? `🔥 I nailed today's LandmarkLens challenge in ${attempts} attempt${attempts > 1 ? 's' : ''}! I'm on a ${streak}-day streak with a ${winRate}% win rate!\nPlay at https://landmarklens.vercel.app`
+              : `😓 I couldn't guess today's Landmark in LandmarkLens. Better luck tomorrow!\nWin rate: ${winRate}%\nPlay at https://landmarklens.vercel.app`;
             navigator.clipboard.writeText(shareText);
             alert('Now you are ready to paste your result!');
           }}
